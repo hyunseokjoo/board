@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="test">
+  <select id="test" resultType="Integer">
+  	select 1 as cnt
+  </select>
+  
+  <select id="select" resultType="com.java.board.BoardBean" parameterType="com.java.board.BoardBean" >
+  	select no, title ,content, name from test where delYn = 'N'
+  	  <if test="no != null">
+	    AND no = #{no}
+	  </if>
+  </select>
+  
+  
+  <insert id="insert" parameterType="com.java.board.BoardBean">
+  	insert into test (title, content, name) values (#{title},#{content},#{name})
+  </insert>
+  
+  <update id="update" parameterType="com.java.board.BoardBean">
+  	update test set title = #{title}, content = #{content} where no = #{no}
+  </update>
+  
+  <update id="delete" parameterType="com.java.board.BoardBean">
+  	update test set delYn = 'Y' where no = #{no}
+  </update>
+  
+  
+  
+  
+  
+
+  <select id="search" parameterType="com.java.board.ContentBean" resultType="com.java.board.ContentBean">
+  	select title, image, content from TEST where 1=1
+  	<if test="title != null ">
+  		and title like '%${title}%'
+  	</if>
+  </select>
+  <insert id="signIn" parameterType="com.java.board.UserInfo">
+  	 insert into USER(id,password,b_year,b_month,b_day,email,gender,phone) values( #{id},#{password},#{b_year},#{b_month},#{b_day},#{email},#{gender},#{phone})
+  </insert>
+  
+  <select id="id_check" parameterType="String" resultType="String">
+     select id from USER where id = #{id}
+  </select>
+
+</mapper>
