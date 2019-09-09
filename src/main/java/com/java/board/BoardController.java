@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class BoardController {
@@ -29,6 +30,7 @@ public class BoardController {
 		session.selectOne("test.insert", bb);
 		return "redirect:/board";
 	}
+	
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
 	public  String detail(HttpServletRequest request,  BoardBean bb) {
 		System.out.println(request.getParameter("no"));
@@ -39,6 +41,7 @@ public class BoardController {
 		}
 		return "/board_Detail";
 	}
+	
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public  String update(HttpServletRequest request, BoardBean bb) {
 		session.update("test.update", bb);
