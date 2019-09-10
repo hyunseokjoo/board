@@ -20,8 +20,8 @@ public class BoardController {
 	
 	@RequestMapping(value = "/board", method = RequestMethod.GET)
 	public  String board(HttpServletRequest request, BoardBean bb) {
-		List<BoardBean> list = session.selectList("test.select", bb);
-		request.setAttribute("list", list);
+//		List<BoardBean> list = session.selectList("test.select", bb);
+//		request.setAttribute("list", list);
 		return "/board";
 	}
 	

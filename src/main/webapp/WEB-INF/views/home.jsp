@@ -22,6 +22,7 @@ $(document).ready(function(){
 			$('#password').focus();
 			return;
 		}else {
+			document.form1.method="post";
 			document.form1.action="/login/check";
 			document.form1.submit();
 		}
@@ -37,12 +38,13 @@ $(document).ready(function(){
 </head>
 <body>
 
-<form name="form1" method="POST">
+<form name="form1">
 	아이디 : <input type="text" name="id" id="id">
 	비밀번호 : <input type="password" name="password" id="password">
 	<button class="login">로그인</button>
 	<button formaction="/signIn" method="GET">회원가입</button>
 </form>
+
 <c:if test="${msg == 'failure'}">
 	<div style="color:red">아이디와 비밀번호가 맞지않습니다.</div>
 </c:if>

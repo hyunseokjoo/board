@@ -50,16 +50,15 @@ public class HomeController {
 		boolean result = loginBoolean(request,user);
 		String id = request.getParameter("id");
 		if(result) {
-			mav.setViewName("home");
+			mav.setViewName("redirect:/board");
 			mav.addObject("msg", "success");
-			mav.addObject("id", id);
 		}else{
 			mav.setViewName("home");
 			mav.addObject("msg", "failure");
 		}		
 		return mav;
 	}
-	
+	//login 체크 하는 내용
 	public boolean loginBoolean(HttpServletRequest request, UserInfo user) {
 		List<UserInfo> list = session.selectList("test.loginCheck" , user);
 		boolean result = false;
@@ -68,6 +67,7 @@ public class HomeController {
 		}
 		return result;
 	}
+	
 	
 	
 	

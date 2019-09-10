@@ -19,6 +19,8 @@
 	<th>작성자</th>
 <%
 	 List<BoardBean> list = (List<BoardBean>) request.getAttribute("list");
+
+	if(list != null){
 	int size =list.size();
 	for(int i = size ; i > 0 ; i--){
 %>	<tr onclick="title_click(this)">	
@@ -28,6 +30,7 @@
 		<td><%=list.get(i-1).getName() %></td>
 	<tr>
 <%
+	}
 	}
 %>
 </table>
