@@ -18,17 +18,21 @@
   </insert>
   
   
+
+  <!-- 회원가입 체크 -->
+  <select id="sign_check" parameterType="com.java.board.UserInfo" resultType="boolean">
+  	select id from USER where id = #{id}
+  </select>
+  
+  
+  <!-- 게시판 R -->
   <select id="select" resultType="com.java.board.BoardBean" parameterType="com.java.board.BoardBean" >
   	select no, title ,content, name from test where delYn = 'N'
   	  <if test="no != null">
 	    AND no = #{no}
 	  </if>
   </select>
-  
-  
-  
-  
-  <!-- 게시판 내용 -->
+  <!-- 게시판 CUD -->
   <insert id="insert" parameterType="com.java.board.BoardBean">
   	insert into test (title, content, name) values (#{title},#{content},#{name})
   </insert>

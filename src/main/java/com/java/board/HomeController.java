@@ -43,9 +43,8 @@ public class HomeController {
 	public String home(HttpServletRequest request, HttpServletResponse response) {
 		return "home";
 	}	
-	
-	@RequestMapping(value = "/login/check", method = RequestMethod.POST)
-	public ModelAndView login_check(HttpServletRequest request, UserInfo user) {
+	@RequestMapping(value = "/", method = RequestMethod.POST)
+	public ModelAndView home(HttpServletRequest request, UserInfo user) {
 		ModelAndView mav = new ModelAndView();
 		boolean result = loginBoolean(request,user);
 		String id = request.getParameter("id");
@@ -57,7 +56,9 @@ public class HomeController {
 			mav.addObject("msg", "failure");
 		}		
 		return mav;
-	}
+	}	
+	
+
 	//login 체크 하는 내용
 	public boolean loginBoolean(HttpServletRequest request, UserInfo user) {
 		List<UserInfo> list = session.selectList("test.loginCheck" , user);

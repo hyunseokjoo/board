@@ -1,5 +1,7 @@
 package com.java.board;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,6 +24,20 @@ public class SignInController {
 	
 	@RequestMapping(value = "/signIn", method = RequestMethod.POST)
 	public String signIn(HttpServletRequest request, UserInfo UI) {
+		boolean result = false;
+		System.out.println(session.selectOne("test.sign_check", UI));
+		if(session.selectOne("test.sign_check", UI) == null) {
+			result = false;
+		}else if(session.selectOne("test.sign_check", UI)) {
+			result = true;
+		}
+		request.setAttribute("id", request.getAttribute("id"));
+		request.setAttribute("result", result);
+		return "/signIn";
+	}
+	
+	@RequestMapping(value = "/signIn/check", method = RequestMethod.POST)
+	public String signIn_check(HttpServletRequest request, UserInfo UI) {
 		System.out.println("signIn");
 		session.insert("test.userInsert", UI);
 		return "redirect:/";

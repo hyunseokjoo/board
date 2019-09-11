@@ -10,7 +10,6 @@
 $(document).ready(function(){
 	$('.login').on('click',function(e){
 		e.preventDefault();
-		console.log("1");
 		var id = $('#id').val();
 		var password = $('#password').val();
 		if(id == ""){
@@ -23,7 +22,7 @@ $(document).ready(function(){
 			return;
 		}else {
 			document.form1.method="post";
-			document.form1.action="/login/check";
+			document.form1.action="/";
 			document.form1.submit();
 		}
 		
