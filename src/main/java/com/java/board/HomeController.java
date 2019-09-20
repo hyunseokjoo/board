@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -45,10 +46,15 @@ public class HomeController {
 	}	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public ModelAndView home(HttpServletRequest request, UserInfo user) {
+		HttpSession httpSession = request.getSession();
+		//httpSession.removeAttribute("logIn") session 삭제
+		//httpSession.getAttribute("logIn") session 가져오기
 		ModelAndView mav = new ModelAndView();
 		boolean result = loginBoolean(request,user);
 		String id = request.getParameter("id");
 		if(result) {
+			System.out.println(user);
+			httpSession.setAttribute("logIn", user);
 			mav.setViewName("redirect:/board");
 			mav.addObject("msg", "success");
 		}else{
@@ -58,7 +64,6 @@ public class HomeController {
 		return mav;
 	}	
 	
-
 	//login 체크 하는 내용
 	public boolean loginBoolean(HttpServletRequest request, UserInfo user) {
 		List<UserInfo> list = session.selectList("test.loginCheck" , user);

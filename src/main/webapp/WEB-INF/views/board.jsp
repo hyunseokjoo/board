@@ -10,7 +10,7 @@
 
 </head>
 <body>
-<h1>게시판</h1>
+<h1>게시판</h1> <%=request.getAttribute("id")%> 님 환영합니다.
 <hr>
 <table>
 	<th>번호</th>

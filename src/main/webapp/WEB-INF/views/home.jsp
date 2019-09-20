@@ -25,30 +25,22 @@ $(document).ready(function(){
 			document.form1.action="/";
 			document.form1.submit();
 		}
-		
-		
 	});
-	
-	
-	
 });
 </script>
 
 </head>
 <body>
 
-<form name="form1">
+<form name="form1" method="POST">
 	아이디 : <input type="text" name="id" id="id">
 	비밀번호 : <input type="password" name="password" id="password">
 	<button class="login">로그인</button>
-	<button formaction="/signIn" method="GET">회원가입</button>
+	<button formaction="/signIn" >회원가입</button>
 </form>
 
 <c:if test="${msg == 'failure'}">
 	<div style="color:red">아이디와 비밀번호가 맞지않습니다.</div>
-</c:if>
-<c:if test="${msg == 'success'}">
-	<div >${id}님 환영합니다.</div>
 </c:if>
 
 </body>

@@ -1,5 +1,6 @@
 package com.java.board;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,9 +22,20 @@ public class SignInController {
 	public String signIn() {
 		return "/signIn";
 	}	
-	
 	@RequestMapping(value = "/signIn", method = RequestMethod.POST)
-	public String signIn(HttpServletRequest request, UserInfo UI) {
+	public String signIn(HttpServletRequest request) {
+		return "/signIn";
+	}	
+	
+	@RequestMapping(value = "/signIn/check", method = RequestMethod.POST)
+	public String signIn_check(HttpServletRequest request, UserInfo UI) {
+		System.out.println("signIn");
+		session.insert("test.userInsert", UI);
+		return "redirect:/";
+	}
+	
+	@RequestMapping(value = "/id_check", method = RequestMethod.POST)
+	public void id_check(HttpServletRequest request, UserInfo UI,HttpServletResponse response) {
 		boolean result = false;
 		System.out.println(session.selectOne("test.sign_check", UI));
 		if(session.selectOne("test.sign_check", UI) == null) {
@@ -31,15 +43,11 @@ public class SignInController {
 		}else if(session.selectOne("test.sign_check", UI)) {
 			result = true;
 		}
-		request.setAttribute("id", request.getAttribute("id"));
-		request.setAttribute("result", result);
-		return "/signIn";
-	}
-	
-	@RequestMapping(value = "/signIn/check", method = RequestMethod.POST)
-	public String signIn_check(HttpServletRequest request, UserInfo UI) {
-		System.out.println("signIn");
-		session.insert("test.userInsert", UI);
-		return "redirect:/";
+		try {
+			response.getWriter().print(result); //json 파일로 보내기
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

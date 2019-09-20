@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,11 @@ public class BoardController {
 	SqlSession session;
 	
 	@RequestMapping(value = "/board", method = RequestMethod.GET)
-	public  String board(HttpServletRequest request, BoardBean bb) {
-//		List<BoardBean> list = session.selectList("test.select", bb);
-//		request.setAttribute("list", list);
+	public  String board(HttpServletRequest request, BoardBean bb, HttpSession httpSession) {
+		UserInfo user = (UserInfo) httpSession.getAttribute("logIn");
+		List<BoardBean> list = session.selectList("test.select", bb);
+		request.setAttribute("id", user.getId());
+		request.setAttribute("list", list);
 		return "/board";
 	}
 	
