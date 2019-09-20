@@ -30,13 +30,13 @@
 		<td><%=list.get(i-1).getName() %></td>
 	<tr>
 <%
-	}
+	 }
 	}
 %>
 </table>
 <hr>
 <form>
-<button type="submit" formaction="/detail">글쓰기</button>
+<button type="submit" formaction="/board_Detail">글쓰기</button>
 </form>
 </body>
 </html>

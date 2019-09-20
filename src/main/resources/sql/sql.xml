@@ -36,17 +36,17 @@
 	    AND no = #{no}
 	  </if>
   </select>
-  <!-- 게시판 CUD -->
+  <!-- 게시판 C -->
   <insert id="insert" parameterType="com.java.board.BoardBean">
-  	insert into test (title, content, name) values (#{title},#{content},#{name})
+  	insert into board (title, content, name) values (#{title},#{content},#{name})
   </insert>
-  
+  <!-- 게시판 C -->
   <update id="update" parameterType="com.java.board.BoardBean">
-  	update test set title = #{title}, content = #{content} where no = #{no}
+  	update board set title = #{title}, content = #{content} where no = #{no}
   </update>
-  
+  <!-- 게시판 D -->
   <update id="delete" parameterType="com.java.board.BoardBean">
-  	update test set delYn = 'Y' where no = #{no}
+  	update board set delYn = 'Y' where no = #{no}
   </update>
   
   

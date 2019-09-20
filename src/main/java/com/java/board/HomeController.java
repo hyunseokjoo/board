@@ -56,7 +56,6 @@ public class HomeController {
 			System.out.println(user);
 			httpSession.setAttribute("logIn", user);
 			mav.setViewName("redirect:/board");
-			mav.addObject("msg", "success");
 		}else{
 			mav.setViewName("home");
 			mav.addObject("msg", "failure");

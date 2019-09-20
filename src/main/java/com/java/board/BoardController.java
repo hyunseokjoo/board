@@ -21,10 +21,10 @@ public class BoardController {
 	
 	@RequestMapping(value = "/board", method = RequestMethod.GET)
 	public  String board(HttpServletRequest request, BoardBean bb, HttpSession httpSession) {
-		UserInfo user = (UserInfo) httpSession.getAttribute("logIn");
-		List<BoardBean> list = session.selectList("test.select", bb);
-		request.setAttribute("id", user.getId());
-		request.setAttribute("list", list);
+		UserInfo user = (UserInfo) httpSession.getAttribute("logIn"); //세션 가져오기 userinfo 로 넣어 줬기때문에 변환함
+		List<BoardBean> list = session.selectList("test.select", bb); 
+		request.setAttribute("id", user.getId()); //user의 id를 객체로 전환해서 넣어줌
+		request.setAttribute("list", list); //게시글 내용 가져 오기
 		return "/board";
 	}
 	
@@ -34,9 +34,11 @@ public class BoardController {
 		return "redirect:/board";
 	}
 	
-	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	public  String detail(HttpServletRequest request,  BoardBean bb) {
-		System.out.println(request.getParameter("no"));
+	@RequestMapping(value = "/board_Detail", method = RequestMethod.GET)
+	public  String detail(HttpServletRequest request,  BoardBean bb, HttpSession httpSession) {
+		UserInfo user = (UserInfo) httpSession.getAttribute("logIn");
+		request.setAttribute("id", user.getId());
+		//
 		if(request.getParameter("no") != null) {
 			request.setAttribute("info", session.selectOne("test.select", bb));
 		}else {
