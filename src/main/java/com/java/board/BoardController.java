@@ -27,13 +27,11 @@ public class BoardController {
 		request.setAttribute("list", list); //게시글 내용 가져 오기
 		return "/board";
 	}
-	
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	public  String insert(HttpServletRequest request,BoardBean bb) { 
 		session.selectOne("test.insert", bb);
 		return "redirect:/board";
 	}
-	
 	@RequestMapping(value = "/board_Detail", method = RequestMethod.GET)
 	public  String detail(HttpServletRequest request,  BoardBean bb, HttpSession httpSession) {
 		UserInfo user = (UserInfo) httpSession.getAttribute("logIn");
@@ -46,7 +44,6 @@ public class BoardController {
 		}
 		return "/board_Detail";
 	}
-	
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
 	public  String update(HttpServletRequest request, BoardBean bb) {
 		session.update("test.update", bb);

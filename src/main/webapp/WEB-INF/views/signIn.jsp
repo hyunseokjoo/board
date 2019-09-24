@@ -11,6 +11,31 @@
  .dn{
   display:none;
  }
+ #form{
+  border-radius:5px;
+  box-shadow: 0px 0px 3px 0px #00A800;
+  height:auto;
+  width: 80%;
+  margin: auto;
+  position: relative;
+  top: auto;
+  max-width: 500px;
+  }
+  
+  .signInMark{
+   display: inline-block;
+   margin-left: 10px;
+   width: 15%;
+  }
+  
+  .signInLeft{
+   float: right;
+   width: 80%;
+  }
+  
+  #signIn{
+  clear: both;
+  }
 </style>
 <script>
 $(document).ready(function(){
@@ -104,12 +129,18 @@ $(document).ready(function(){
 </head>
 <body>
 <div class="signInForm">
-<form name="form1">
-	<div class="signInMark">아이디 : </div>	<div class="signInLeft"><input id="id" type="text" name="id" > </div><button id="id_check">중복검사</button>
+<form id="form" name="form1">
+	<div class="signInMark">아이디 :<br><button id="id_check">중복검사</button> </div>	<div class="signInLeft"><input id="id" type="text" name="id" > </div>
+	
+	
 	<div style="color:red" class="dn" id="id_false" >아이디를 사용중이거나 탈퇴한 아이디 입니다.</div>
 	<div style="color:green" class="dn" id="id_true" >사용 가능한 아이디합니다.</div>
+	
+	
 	<div class="signInMark">비밀번호 : </div>	<div class="signInLeft"><input id="password" type="password"name="password"></div>
 	<div class="signInMark">비밀번호 확인:</div><div class="signInLeft"><input id="passwordCheck" type="password"name="passwordcheck"></div>
+	
+	
 	<div style="color:green" class="dn" id="pass_true" >비밀번호가 일치 합니다</div>
 	<div style="color:red" class="dn" id="pass_false" >비밀번호가 다릅니다. 다시 입력해주세요</div>
 	<div class="signInMark">생년월일 :</div> 	
@@ -124,7 +155,7 @@ $(document).ready(function(){
 	</div>
 	<div class="signInMark">성별 : 
 	 <div class="signInLeft">		
-	 <select id="gender" type="text"name="gender">
+	 <select id="gender" type="text" name="gender">
 	  <option value="남">남</option>
 	  <option value="여">여</option>
 	 </select>
@@ -133,7 +164,7 @@ $(document).ready(function(){
 	<div class="signInMark">이메일 : </div>	<div class="signInLeft"><input id="email" type="email"name="email"></div>
 	<div class="signInMark">핸드폰번호 :</div> <div class="signInLeft"><input id="phone" type="text"name="phone"></div>
 	<button id="signIn" name="signIn" >회원가입</button>
-	<button id="cancel" name="cancel">취소</button>
+	<button id="cancel" name="cancel" >취소</button>
 </form>
 </div>
 </body>
