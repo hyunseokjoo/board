@@ -6,15 +6,16 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery.min.js"></script>
-<style>
+<style> 
+  .div_out{
+  display: flex;
+  align-content: center;
+  }
   #form{
   border-radius:5px;
   box-shadow: 0px 0px 3px 0px #00A800;
-  height:auto;
   width: 40%;
-  margin: auto;
-  position: relative;
-  top: 200px;
+  margin: 10% auto;
   max-width: 350px;
   }
   #div_top{
@@ -113,17 +114,16 @@ $(document).ready(function(){
 
 </head>
 <body>
-
+<div class="div_out">
 <form id="form" name="form1" method="POST">
 	<div id="div_top">로그인 정보를 입력해주세요.</div>
 	<div id="div_id"><input type="text" name="id" id="id" placeholder="아이디"></div>
 	<div id="div_pass"> <input type="password" name="password" id="password" placeholder="패스워드"></div>
 	<div id="div_button1"><button class="login">로그인</button></div><div id="div_button2"><button formaction="/signIn" >회원가입</button></div>
 </form>
-
 <c:if test="${msg == 'failure'}">
 	<div style="color:red">아이디와 비밀번호가 맞지않습니다.</div>
 </c:if>
-
+</div>
 </body>
 </html>

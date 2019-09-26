@@ -7,34 +7,24 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="http://code.jquery.com/jquery.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <style>
+ .form_out{
+  display: flex;
+  align-content: center;
+ }
+ .div_out{
+  padding: 20px;
+ }
  .dn{
   display:none;
  }
  #form{
   border-radius:5px;
   box-shadow: 0px 0px 3px 0px #00A800;
-  height:auto;
   width: 80%;
-  margin: auto;
-  position: relative;
-  top: auto;
+  margin: 10% auto;
   max-width: 500px;
-  }
-  
-  .signInMark{
-   display: inline-block;
-   margin-left: 10px;
-   width: 15%;
-  }
-  
-  .signInLeft{
-   float: right;
-   width: 80%;
-  }
-  
-  #signIn{
-  clear: both;
   }
 </style>
 <script>
@@ -129,43 +119,68 @@ $(document).ready(function(){
 </head>
 <body>
 <div class="signInForm">
+<div class="form_out">
 <form id="form" name="form1">
-	<div class="signInMark">아이디 :<br><button id="id_check">중복검사</button> </div>	<div class="signInLeft"><input id="id" type="text" name="id" > </div>
-	
-	
+<div class="div_out">
+	<div class="signInMark form-group">아이디 :<br>
+		<div class="signInLeft "><input id="id" class="form-control" type="text" name="id" > 
+		<button type="button" class="btn btn-success" id="id_check">중복검사</button>	
+		</div>
+	</div>
 	<div style="color:red" class="dn" id="id_false" >아이디를 사용중이거나 탈퇴한 아이디 입니다.</div>
 	<div style="color:green" class="dn" id="id_true" >사용 가능한 아이디합니다.</div>
 	
 	
-	<div class="signInMark">비밀번호 : </div>	<div class="signInLeft"><input id="password" type="password"name="password"></div>
-	<div class="signInMark">비밀번호 확인:</div><div class="signInLeft"><input id="passwordCheck" type="password"name="passwordcheck"></div>
-	
-	
+	<div class="signInMark form-group">비밀번호 : 	
+	  <div class="signInLeft"><input class="form-control" id="password" type="password"name="password">
+	  </div>
+	  </div>
+	<div class="signInMark form-group">비밀번호 확인:
+	  <div class="signInLeft"><input class="form-control" id="passwordCheck" type="password"name="passwordcheck">
+	  </div>
+	</div>
 	<div style="color:green" class="dn" id="pass_true" >비밀번호가 일치 합니다</div>
 	<div style="color:red" class="dn" id="pass_false" >비밀번호가 다릅니다. 다시 입력해주세요</div>
-	<div class="signInMark">생년월일 :</div> 	
+	<div class="signInMark form-group">
+		생년월일 :
 	<div class="signInLeft">
-	<input id="b_year" type="text"name="b_year">년
-	<select  id="b_month" name="b_month">
-	<%for(int i =1; i < 13; i++){ %>
-	 <option value="<%=i%>월"><%=i %>월</option>
-	<%} %>
-	</select>
-	<input id="b_day" name="b_day">일
-	</div>
-	<div class="signInMark">성별 : 
-	 <div class="signInLeft">		
-	 <select id="gender" type="text" name="gender">
+	<div class="form-row">
+	    <div class="col-7">
+	     	 <input id="b_year" class="form-control col-auto" type="text"name="b_year" placeholder="년">
+	    </div>
+	    <div class="col">
+	      	<select  id="b_month" class="form-control col-auto" name="b_month" >
+				<%for(int i =1; i < 13; i++){ %>
+				 <option value="<%=i%>월"><%=i %>월</option>
+				<%} %>
+			</select>
+	    </div>
+	    <div class="col">
+	     	<input id="b_day" class="form-control" name="b_day" placeholder="일">
+	    </div>
+ 	 </div>
+	<div class="signInMark form-group">성별 : 
+	 <div class="signInLeft ">		
+	 <select id="gender" class="form-control"type="text" name="gender">
 	  <option value="남">남</option>
 	  <option value="여">여</option>
 	 </select>
 	 </div>
     </div>
-	<div class="signInMark">이메일 : </div>	<div class="signInLeft"><input id="email" type="email"name="email"></div>
-	<div class="signInMark">핸드폰번호 :</div> <div class="signInLeft"><input id="phone" type="text"name="phone"></div>
-	<button id="signIn" name="signIn" >회원가입</button>
-	<button id="cancel" name="cancel" >취소</button>
+	<div class="signInMark">이메일 :
+		<div class="signInLeft"><input id="email" class="form-control" type="email"name="email">
+		</div>
+	</div>
+	<div class="signInMark">핸드폰번호 :
+		<div class="signInLeft"><input id="phone" class="form-control"  type="text"name="phone">
+		</div>
+	</div> 
+	<button type="button" class="btn btn-success" id="signIn" name="signIn" >회원가입</button>
+	<button type="button" class="btn btn-danger" id="cancel" name="cancel" >취소</button>
+	</div>
 </form>
 </div>
+</div>
+
 </body>
 </html>

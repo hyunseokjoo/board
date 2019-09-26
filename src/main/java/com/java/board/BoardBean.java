@@ -14,7 +14,6 @@ public class BoardBean {
 		this.content = content;
 		this.name = name;
 	}
-	
 	public String getTitle() {
 		return title;
 	}
@@ -39,6 +38,4 @@ public class BoardBean {
 	public void setNo(String no) {
 		this.no = no;
 	}
-	
-	
 }
