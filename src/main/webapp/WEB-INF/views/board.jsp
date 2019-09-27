@@ -61,57 +61,67 @@
 <% //content_write 글작성,  content_update 글 수정 %>
 <script>
 $(document).ready(function(){
-    $('#star_grade input').click(function(){
-    	
-        $(this).parent().children("input").prop("checked" , false); 
-        $(this).attr('checked', true).prevAll("input").prop('checked', true);
-        
-        
-        var it = ($(this).attr('checked', true).prevAll("input").length + 1);
-        
-        $(this).attr('checked', true).prevAll("input")[it];
-        console.log($(this).attr('checked', false).prevAll("input"));
-        console.log($(this).attr('checked', true).prevAll("input").context.attr('checked' , true ));
-        
-        
-        return false;
-    });
     $('#star_grade a').click(function(){ 
 	    $(this).parent().children("a").removeClass("on");  /* 별점의 on 클래스 전부 제거 */
 	    $(this).addClass("on").prevAll("a").addClass("on"); /* 클릭한 별과, 그 앞 까지 별점에 on 클래스 추가 */
 	    console.log($(this).attr("value"));
     });
+    //페이지 글쓰기 전환
+    $("#write").click(function(e){
+    	$("#content_update").addClass("dn");
+    	$("#content_list").addClass("dn");
+    	$("#content_write").removeClass("dn");
+    });
+    //페이지 글목록 전환
+    $("#list , #write_cancel").off().on('click', function(e){ 
+    	e.preventDefault();
+    	$("#content_update").addClass("dn");
+    	$("#content_write").addClass("dn");
+    	$("#content_list").removeClass("dn");
+    });
+    
+    $("#content_insert").click(function(e){
+    	e.preventDefault();
+    	document.write_form.method="POST";
+    	document.write_form.action="/insert";
+    	document.write_form.submit();
+    });
+    
 }); 
 </script>
 
 
 </head>
-<body> 
+<body>
+<!-- nav bar --> 
 <!-- content 내용 작성할때 class right사용 하자--> 
 <div class="outer"> 
 <div>  
   <div class="div_outer border">
     <ul class="nav flex-column">
-	  <li class="nav-item"> 
-	    <a class="nav-link text-info" href="#" >글쓰기</a>
+    	<li class="nav-item">
+	    <a id="list" class="nav-link text-info" href="#">글관리</a>
 	  </li>
-	  <li class="nav-item">
-	    <a class="nav-link text-info" href="#">글관리</a>
+	  <li class="nav-item"> 
+	    <a id="write" class="nav-link text-info" href="#" >글쓰기</a>
 	  </li>
 	</ul>
   </div>
 </div> 
+
 <div class="right">
+<!-- nav bar 상단 -->
 <ul class="navbar-nav px-3">
    <li class="nav-item text-nowrap">    
-   <a class="nav-link" href="#" style="float:right;">로그 아웃</a>
+   <!-- 로그아웃 적용 --> 
+   <a class="nav-link" href="/logout" style="float:right;">로그 아웃</a>
    <%=request.getAttribute("id")%> 님 환영합니다.
    <input class="form-control" type="text" placeholder="Search" aria-label="Search" style="width: 20%; float: right;"> 
    </li>
 </ul>
 
-
-<%-- <table class="table table-hover">  
+<!-- 글관리(list) -->
+ <table class="table table-hover" id="content_list">  
   <thead> 
     <tr>
       <th scope="col">번호</th>
@@ -121,8 +131,8 @@ $(document).ready(function(){
     </tr>
   </thead>
   <tbody>
-     	<%
-	 	List<BoardBean> list = (List<BoardBean>) request.getAttribute("list");
+     	<% List<BoardBean> list = (List<BoardBean>) request.getAttribute("list");
+     	System.out.println(list);
 		
 			if(list != null){
 			int size =list.size();
@@ -138,30 +148,31 @@ $(document).ready(function(){
 			}
 		%>
   </tbody>
-</table> --%>
+</table> 
+
 
 <!-- 게시판 새글 작성 때    -->
-<div class="dn content_outer" id="content_write"> 
-	<form method="POST">
+<div class="content_outer dn" id="content_write"> 
+	<form name="write_form" method="POST">
 	 <div class="form-group">
-		<label style="font-size: 40px;">제목</label>  <div style="float: right;">작성자</div>
-		<input class="form-control" name="title" value = "" placeholder="제목을 입력해주세요">
+		<label style="font-size: 40px;">제목</label>  <div style="float: right;">작성자 <%=request.getAttribute("id")%> <input class="dn" name="name" value="<%=request.getAttribute("id")%>"></div>
+		<input class="form-control" name="title" placeholder="제목을 입력해주세요">
 		<hr>
 	 </div> 
 	 <div class="form-group">
 		<h5>내용</h5>
-		 <textarea class="form-control" name="content" value = "" rows="5" placeholder="내용을입력해주세요"></textarea>
+		 <textarea class="form-control" name="content" rows="5" placeholder="내용을입력해주세요"></textarea>
 		<hr>
 	 </div>
 		<h5>첨부파일</h5> 
 		<input class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
-		<button class="btn btn-outline-success" type="submit"  formaction="/update" name="no" value="">작성</button>
-		<button class="btn btn-outline-danger" type="submit" formaction="/delete" name="no" value="">취소</button><br>
+		<button class="btn btn-outline-success" type="submit" formaction="/insert" id="content_insert" value="">작성</button>
+		<button class="btn btn-outline-danger" id="write_cancel" name="no" value="">취소</button><br>
 	</form>
 </div>
 
 <!-- 게시판 글 수정때   -->
-<div class=" content_outer" id="content_update"> 
+<div class="content_outer dn" id="content_update"> 
 	<form method="POST">
 	 <div class="form-group">
 		<label style="font-size: 40px;">제목</label>  <div style="float: right;">작성자</div>
@@ -174,25 +185,19 @@ $(document).ready(function(){
 		<hr>
 	 </div>
 	 <div class="form-group">
-	 	<p id="star_grade">
-		    <input type="radio" value="1" > 
-		    <input type="radio" value="2" >
-		    <input type="radio" value="3" >
-		    <input type="radio" value="4" >
-		    <input type="radio" value="5" >
-	    </p>
-		<!-- <p id="star_grade">
+	   <p id="star_grade">
 	        <a href="#" value="1">★</a>
 	        <a href="#" value="2">★</a>
 	        <a href="#" value="3">★</a>
 	        <a href="#" value="4">★</a>
 	        <a href="#" value="5">★</a>
-		</p> -->
+		</p> 
 	 </div>
 		<h5>첨부파일</h5>
 		<input class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
-		<button class="btn btn-outline-success" type="submit"  formaction="/update" name="no" value="">작성</button>
-		<button class="btn btn-outline-danger" type="submit" formaction="/delete" name="no" value="">취소</button><br>
+		<button class="btn btn-outline-success" formaction="/update" name="no" value="">수정</button>
+		<button class="btn btn-outline-danger"  formaction="/delete" name="no" value="">삭제</button>
+		<button class="btn btn-outline-secondary"  name="no" value="">뒤로가기</button><br>
 	</form>
 </div>
  

@@ -122,7 +122,7 @@ $(document).ready(function(){
 <div class="form_out">
 <form id="form" name="form1">
 <div class="div_out">
-	<div class="signInMark form-group">아이디 :<br>
+	<div class="signInMark form-group"><a style="color: red;">* </a>아이디 :<br>
 		<div class="signInLeft "><input id="id" class="form-control" type="text" name="id" > 
 		<button type="button" class="btn btn-success" id="id_check">중복검사</button>	
 		</div>
@@ -131,11 +131,11 @@ $(document).ready(function(){
 	<div style="color:green" class="dn" id="id_true" >사용 가능한 아이디합니다.</div>
 	
 	
-	<div class="signInMark form-group">비밀번호 : 	
+	<div class="signInMark form-group"><a style="color: red;">* </a>비밀번호 : 	
 	  <div class="signInLeft"><input class="form-control" id="password" type="password"name="password">
 	  </div>
 	  </div>
-	<div class="signInMark form-group">비밀번호 확인:
+	<div class="signInMark form-group"><a style="color: red;">* </a>비밀번호 확인:
 	  <div class="signInLeft"><input class="form-control" id="passwordCheck" type="password"name="passwordcheck">
 	  </div>
 	</div>

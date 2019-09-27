@@ -6,8 +6,7 @@ public class BoardBean {
 	private String content;
 	private String name;
 	
-	public BoardBean() {
-	}
+	public BoardBean() {}
 	public BoardBean(String title, String content, String name,String no) {
 		super();
 		this.title = title;

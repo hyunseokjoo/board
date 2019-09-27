@@ -19,6 +19,7 @@
   max-width: 350px;
   }
   #div_top{
+  margin: 0 auto;
   text-align: center;
   padding-top: 20px;
   padding-bottom: 20px; 
@@ -110,20 +111,21 @@ $(document).ready(function(){
 		}
 	});
 });
-</script>
+</script> 
 
 </head>
 <body>
-<div class="div_out">
+<div class="div_out"> 
 <form id="form" name="form1" method="POST">
-	<div id="div_top">로그인 정보를 입력해주세요.</div>
+	<div id="div_top" style="display: flex; justify-content: center;">로그인 정보를 입력해주세요.</div>
 	<div id="div_id"><input type="text" name="id" id="id" placeholder="아이디"></div>
 	<div id="div_pass"> <input type="password" name="password" id="password" placeholder="패스워드"></div>
+	<c:if test="${msg == 'failure'}">
+		<div style="color:red; display: flex; justify-content: center;">아이디와 비밀번호가 맞지않습니다.</div>
+	</c:if>
 	<div id="div_button1"><button class="login">로그인</button></div><div id="div_button2"><button formaction="/signIn" >회원가입</button></div>
 </form>
-<c:if test="${msg == 'failure'}">
-	<div style="color:red">아이디와 비밀번호가 맞지않습니다.</div>
-</c:if>
+
 </div>
 </body>
 </html>

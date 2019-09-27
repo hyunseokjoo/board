@@ -21,11 +21,20 @@ public class BoardController {
 	
 	@RequestMapping(value = "/board", method = RequestMethod.GET)
 	public  String board(HttpServletRequest request, BoardBean bb, HttpSession httpSession) {
-		UserInfo user = (UserInfo) httpSession.getAttribute("logIn"); //세션 가져오기 userinfo 로 넣어 줬기때문에 변환함
-		List<BoardBean> list = session.selectList("test.select", bb); 
-		request.setAttribute("id", user.getId()); //user의 id를 객체로 전환해서 넣어줌
-		request.setAttribute("list", list); //게시글 내용 가져 오기
-		return "/board";
+		//세션 확인 예외처리
+		if(httpSession.getAttribute("logIn") == null) {
+			return "redirect:/";
+		}else {
+			UserInfo user = (UserInfo) httpSession.getAttribute("logIn"); //세션 가져오기 userinfo 로 넣어 줬기때문에 변환함
+			List<BoardBean> list = session.selectList("test.select", bb); 
+			request.setAttribute("id", user.getId()); //user의 id를 객체로 전환해서 넣어줌
+			request.setAttribute("list", list); //게시글 내용 가져 오기
+			return "/board";
+		}
+	}
+	@RequestMapping(value = "/board", method = RequestMethod.POST)
+	public  void boardPOST(HttpServletRequest request, BoardBean bb, HttpSession httpSession) {
+		board( request,  bb,  httpSession);
 	}
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	public  String insert(HttpServletRequest request,BoardBean bb) { 
@@ -54,5 +63,15 @@ public class BoardController {
 		session.update("test.delete", bb);
 		return "redirect:/board";
 	}
+	
+	
+	//logout
+	@RequestMapping(value = "/logout", method = RequestMethod.GET)
+	public  String logout(HttpSession httpSession) {
+		httpSession.removeAttribute("logIn");
+		System.out.println("세션이 제거되었습니다 : " + httpSession.getAttribute(" logIn"));
+		return "redirect:/";
+	}
 
+	
 }
