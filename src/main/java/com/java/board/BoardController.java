@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import net.sf.json.JSONObject;
+
 @Controller
 public class BoardController {
 
@@ -37,33 +39,56 @@ public class BoardController {
 		board( request,  bb,  httpSession);
 	}
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
-	public  String insert(HttpServletRequest request,BoardBean bb) { 
+	public void insert(HttpServletRequest request,BoardBean bb,HttpServletResponse response) { 
 		session.selectOne("test.insert", bb);
-		return "redirect:/board";
-	}
-	@RequestMapping(value = "/board_Detail", method = RequestMethod.GET)
-	public  String detail(HttpServletRequest request,  BoardBean bb, HttpSession httpSession) {
-		UserInfo user = (UserInfo) httpSession.getAttribute("logIn");
-		request.setAttribute("id", user.getId());
-		//
-		if(request.getParameter("no") != null) {
-			request.setAttribute("info", session.selectOne("test.select", bb));
-		}else {
-			request.setAttribute("info", bb);
+		JSONObject jsonObject = new JSONObject();
+		boolean result = true;
+		jsonObject.put("result", result);
+		try {
+			response.getWriter().print(jsonObject);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return "/board_Detail";
+	}
+	@RequestMapping(value = "/board_Detail", method = RequestMethod.POST)
+	public void detail(HttpServletRequest request,  BoardBean bb, HttpServletResponse response) {
+		System.out.println(request.getParameter("no"));
+		BoardBean info = session.selectOne("test.select", bb);
+		JSONObject jsonObject = new JSONObject();
+		try {
+			jsonObject.put("info", info);
+			response.setHeader("Content-Type", "application/xml");
+			response.setContentType("text/xml;charset=UTF-8");
+			response.setCharacterEncoding("utf-8");
+			response.getWriter().print(jsonObject);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public  String update(HttpServletRequest request, BoardBean bb) {
+	public void update(HttpServletRequest request, BoardBean bb, HttpServletResponse response) {
 		session.update("test.update", bb);
-		return "redirect:/board";
+		JSONObject jsonObject = new JSONObject();
+		boolean result = true;
+		jsonObject.put("result", result);
+		try {
+			response.getWriter().print(jsonObject);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public  String delete(HttpServletRequest request, BoardBean bb) {
+	public void delete(HttpServletRequest request, BoardBean bb,  HttpServletResponse response) {
 		session.update("test.delete", bb);
-		return "redirect:/board";
+		JSONObject jsonObject = new JSONObject();
+		boolean result = true;
+		jsonObject.put("result", result);
+		try {
+			response.getWriter().print(jsonObject);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
 	
 	//logout
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)

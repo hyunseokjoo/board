@@ -10,14 +10,13 @@
 <meta charset="UTF-8">
 <title>게시판</title>
 <style>
- .dn {
+  .dn {
 	 display:none;
- }
+  }
   .btn{
     width: 100%;
   }
   .div_outer{
- 
    top : 0px;
    width: 200px;
    position: fixed;
@@ -32,7 +31,6 @@
   	left: 195px;
    	height: auto;
   }
-  
   .outer{
    margin: 0 auto;
    width: 100%;
@@ -54,43 +52,131 @@
    text-decoration: none;
    color: gray;
   }
-  #star_grade a.on{
+  .on{
    color: red;
   } 
 </style> 
 <% //content_write 글작성,  content_update 글 수정 %>
 <script>
 $(document).ready(function(){
-    $('#star_grade a').click(function(){ 
+	var star = 0;
+    $('.star_grade a, .update_star a').click(function(){ 
 	    $(this).parent().children("a").removeClass("on");  /* 별점의 on 클래스 전부 제거 */
 	    $(this).addClass("on").prevAll("a").addClass("on"); /* 클릭한 별과, 그 앞 까지 별점에 on 클래스 추가 */
-	    console.log($(this).attr("value"));
+	    star = $(this).attr("value");
     });
     //페이지 글쓰기 전환
     $("#write").click(function(e){
+    	e.preventDefault();
     	$("#content_update").addClass("dn");
     	$("#content_list").addClass("dn");
     	$("#content_write").removeClass("dn");
     });
     //페이지 글목록 전환
-    $("#list , #write_cancel").off().on('click', function(e){ 
-    	e.preventDefault();
+    $("#list , #write_cancel .update_back").on('click', function(e){ 
     	$("#content_update").addClass("dn");
     	$("#content_write").addClass("dn");
     	$("#content_list").removeClass("dn");
     });
-    
+    //글 작성
     $("#content_insert").click(function(e){
     	e.preventDefault();
-    	document.write_form.method="POST";
-    	document.write_form.action="/insert";
-    	document.write_form.submit();
+    	var data = { 'title' : $("#write_title").val(), 'content' : $("#write_content").val(), 'star': star, 'name' : $('#write_name').text() }
+    	$.ajax({ 
+			url: "/insert", 
+			data: data, 
+			method:"POST", 
+			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			dataType: "json", 
+			success : function(data){
+				console.log(data);
+				$("#content_update").addClass("dn");
+		    	$("#content_write").addClass("dn");
+		    	$("#content_list").removeClass("dn");
+		    	location.reload();
+			}
+		});
     });
+    //자세히 보기 = 수정
+    var no = 0;
+    $('.content_click').on('click', function(e){
+    	e.preventDefault();
+    	var data = { no : $(this).children("td")[0].innerText }
+    	$.ajax({ 
+			url: "/board_Detail", 
+			data: data, 
+			method:"POST", 
+			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			dataType: "json", 
+			success : function(data){
+				//오류 해결
+				//console.log(typeof data);json 아니고 오브젝트
+				//var str = JSON.stringify(data);// string으로 변환해줌.
+				//console.log(typeof str);
+				var result = data.info;
+				console.log(result);
+				$("#content_list").addClass("dn");
+		    	$("#content_write").addClass("dn");
+		    	$("#content_update").removeClass("dn");
+		    	//값 넣기
+		    	no = result.no;
+		    	$("#update_name").text(result.name);
+		    	$("#update_title").val(result.title); 
+		    	$("#update_content").val(result.content);
+		    	star = result.star;
+		    	for (var i = 0; i < result.star; i++) {
+		    		$(".update_star").children('a').eq(i).addClass('on');
+				}
+			}
+		});
+	});
+    
+   
+    $('#update').click(function(e){
+    	e.preventDefault();
+    	var data = { 'title' : $("#update_title").val(), 'content' : $("#update_content").val(), 'star': star, 'name' : $('#update_name').text(), 'no' : no }
+    	console.log(data);
+    	$.ajax({ 
+			url: "/update", 
+			data: data, 
+			method:"POST", 
+			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			dataType: "json", 
+			success : function(data){
+				console.log("1");
+				$("#content_update").addClass("dn");
+		    	$("#content_write").addClass("dn");
+		    	$("#content_list").removeClass("dn");
+		    	alert("수정되었습니다.");
+		    	location.reload();
+			}
+		});
+    });
+    
+    $('#update_delete').click(function(e){
+    	e.preventDefault();
+    	var data = { 'no' : no };
+    	$.ajax({ 
+			url: "/delete", 
+			data: data, 
+			method:"POST", 
+			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			dataType: "json", 
+			success : function(data){
+				console.log("1");
+				$("#content_update").addClass("dn");
+		    	$("#content_write").addClass("dn");
+		    	$("#content_list").removeClass("dn");
+		    	alert("삭제되었습니다.")
+		    	location.reload();
+			}
+		});
+    	
+    });
+   
     
 }); 
 </script>
-
-
 </head>
 <body>
 <!-- nav bar --> 
@@ -100,10 +186,10 @@ $(document).ready(function(){
   <div class="div_outer border">
     <ul class="nav flex-column">
     	<li class="nav-item">
-	    <a id="list" class="nav-link text-info" href="#">글관리</a>
+	    <a id="list" class="nav-link text-info" >글관리</a>
 	  </li>
 	  <li class="nav-item"> 
-	    <a id="write" class="nav-link text-info" href="#" >글쓰기</a>
+	    <a id="write" class="nav-link text-info" >글쓰기</a>
 	  </li>
 	</ul>
   </div>
@@ -126,7 +212,6 @@ $(document).ready(function(){
     <tr>
       <th scope="col">번호</th>
       <th scope="col">제목</th>
-      <th scope="col">내용</th>
       <th scope="col">작성자</th>
     </tr>
   </thead>
@@ -137,10 +222,9 @@ $(document).ready(function(){
 			if(list != null){
 			int size =list.size();
 			for(int i = size ; i > 0 ; i--){
-		%>	<tr onclick="title_click(this)">	
+		%>	<tr class="content_click">	
 				<td><%=list.get(i-1).getNo() %></td>
 				<td><a href="/detail?no=<%=i %>" name="no" value="<%=list.get(i-1).getNo() %>"><%=list.get(i-1).getTitle() %></a></td>
-				<td><%=list.get(i-1).getContent() %></td>
 				<td><%=list.get(i-1).getName() %></td>
 			<tr>
 		<%
@@ -150,24 +234,32 @@ $(document).ready(function(){
   </tbody>
 </table> 
 
-
 <!-- 게시판 새글 작성 때    -->
 <div class="content_outer dn" id="content_write"> 
 	<form name="write_form" method="POST">
 	 <div class="form-group">
-		<label style="font-size: 40px;">제목</label>  <div style="float: right;">작성자 <%=request.getAttribute("id")%> <input class="dn" name="name" value="<%=request.getAttribute("id")%>"></div>
-		<input class="form-control" name="title" placeholder="제목을 입력해주세요">
+		<label style="font-size: 40px;">제목</label>  <div style="float: right;">작성자 <a id="write_name"><%=request.getAttribute("id")%></a> </div>
+		<input id="write_title" class="form-control" name="title" placeholder="제목을 입력해주세요">
 		<hr>
 	 </div> 
 	 <div class="form-group">
 		<h5>내용</h5>
-		 <textarea class="form-control" name="content" rows="5" placeholder="내용을입력해주세요"></textarea>
+		 <textarea id="write_content" class="form-control" name="content" rows="5" placeholder="내용을입력해주세요"></textarea>
 		<hr>
+	 </div>
+	  <div class="form-group">
+	   <p class="star_grade" >
+	        <a href="#" value="1">★</a>
+	        <a href="#" value="2">★</a>
+	        <a href="#" value="3">★</a>
+	        <a href="#" value="4">★</a>
+	        <a href="#" value="5">★</a>
+		</p> 
 	 </div>
 		<h5>첨부파일</h5> 
 		<input class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
-		<button class="btn btn-outline-success" type="submit" formaction="/insert" id="content_insert" value="">작성</button>
-		<button class="btn btn-outline-danger" id="write_cancel" name="no" value="">취소</button><br>
+		<button class="btn btn-outline-success" id="content_insert" >작성</button>
+		<button class="btn btn-outline-danger" id="write_cancel">취소</button><br>
 	</form>
 </div>
 
@@ -175,17 +267,17 @@ $(document).ready(function(){
 <div class="content_outer dn" id="content_update"> 
 	<form method="POST">
 	 <div class="form-group">
-		<label style="font-size: 40px;">제목</label>  <div style="float: right;">작성자</div>
-		<input class="form-control" name="title" value = "" placeholder="제목을 입력해주세요">
+		<label style="font-size: 40px;">제목</label>  <div style="float: right;">작성자<br><a id="update_name"></a></div>
+		<input id="update_title" class="form-control" name="title"  >
 		<hr>
 	 </div> 
 	 <div class="form-group">
 		<h5>내용</h5>
-		 <textarea class="form-control" name="content" value = "" rows="5" placeholder="내용을입력해주세요"></textarea>
+		 <textarea  id="update_content" class="form-control" name="content"rows="5" ></textarea>
 		<hr>
 	 </div>
 	 <div class="form-group">
-	   <p id="star_grade">
+	   <p class="update_star">
 	        <a href="#" value="1">★</a>
 	        <a href="#" value="2">★</a>
 	        <a href="#" value="3">★</a>
@@ -194,10 +286,10 @@ $(document).ready(function(){
 		</p> 
 	 </div>
 		<h5>첨부파일</h5>
-		<input class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
-		<button class="btn btn-outline-success" formaction="/update" name="no" value="">수정</button>
-		<button class="btn btn-outline-danger"  formaction="/delete" name="no" value="">삭제</button>
-		<button class="btn btn-outline-secondary"  name="no" value="">뒤로가기</button><br>
+		<input  id="updat_file" class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
+		<button class="btn btn-outline-success" id="update">수정</button>
+		<button class="btn btn-outline-danger"  id="update_delete">삭제</button>
+		<button class="btn btn-outline-secondary update_back" >뒤로가기</button><br>
 	</form>
 </div>
  

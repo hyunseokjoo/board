@@ -41,12 +41,16 @@ public class HomeController {
 	SqlSession session;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(HttpServletRequest request, HttpServletResponse response) {
-		return "home";
+	public String home(HttpServletRequest request, HttpSession httpSession) {
+		if(httpSession.getAttribute("logIn") != null) {
+			return "redirect:/board";
+		}else {
+			return "home";
+		}
 	}	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public ModelAndView home(HttpServletRequest request, UserInfo user) {
-		HttpSession httpSession = request.getSession();
+	public ModelAndView home(HttpServletRequest request, UserInfo user, HttpSession httpSession) {
+		//HttpSession httpSession = request.getSession();
 		//httpSession.removeAttribute("logIn") session 삭제
 		//httpSession.getAttribute("logIn") session 가져오기
 		ModelAndView mav = new ModelAndView();

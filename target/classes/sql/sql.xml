@@ -31,18 +31,18 @@
   
   <!-- 게시판 R -->
   <select id="select" resultType="com.java.board.BoardBean" parameterType="com.java.board.BoardBean" >
-  	select no, title ,content, name from board WHERE DELYN = 'N'
+  	select no, title ,content, name, star from board WHERE DELYN = 'N'
   	  <if test="no != null">
 	    AND no = #{no}
 	  </if>
   </select>
   <!-- 게시판 C -->
   <insert id="insert" parameterType="com.java.board.BoardBean">
-  	insert into board (title, content, name) values (#{title},#{content},#{name})
+  	insert into board (title, content, name, star) values (#{title},#{content},#{name}, #{star})
   </insert>
   <!-- 게시판 C -->
   <update id="update" parameterType="com.java.board.BoardBean">
-  	update board set title = #{title}, content = #{content} where no = #{no}
+  	update board set title = #{title}, content = #{content}, star = #{star} where no = #{no}
   </update>
   <!-- 게시판 D -->
   <update id="delete" parameterType="com.java.board.BoardBean">
