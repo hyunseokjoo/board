@@ -1,6 +1,7 @@
 package com.java.board;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.sf.json.JSONObject;
@@ -39,8 +42,21 @@ public class BoardController {
 		board( request,  bb,  httpSession);
 	}
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
-	public void insert(HttpServletRequest request,BoardBean bb,HttpServletResponse response) { 
-		session.selectOne("test.insert", bb);
+	public void insert(@RequestParam("files") MultipartFile[] files, HttpServletRequest request,BoardBean bb,HttpServletResponse response) {
+		
+		for (int i = 0; i < files.length; i++) {
+			MultipartFile file = files[i];	
+			System.out.println(file); 
+			String originalFileName = file.getOriginalFilename();
+			System.out.println(originalFileName);
+			String fileName = UUID.randomUUID().toString();
+			System.out.println(fileName);
+			String ext = originalFileName.substring(originalFileName.lastIndexOf("."), originalFileName.length());
+			System.out.println("처음 내용 : " + originalFileName + ext);
+			System.out.println("데이터베이스 : " + fileName);
+		}
+		
+		//session.selectOne("test.insert", bb);
 		JSONObject jsonObject = new JSONObject();
 		boolean result = true;
 		jsonObject.put("result", result);

@@ -56,7 +56,7 @@ public class FileController {
 					System.out.println("없다");
 					f.mkdirs();
 				}
-				
+				no,path,originalFileName, uuidFileName;
 				//output
 				OutputStream os = new FileOutputStream(new File(path + fileName + ext));
 				os.write(data);

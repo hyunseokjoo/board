@@ -55,6 +55,9 @@
   .on{
    color: red;
   } 
+  .select_img{
+  	padding: 10px;
+  }
 </style> 
 <% //content_write 글작성,  content_update 글 수정 %>
 <script>
@@ -81,12 +84,23 @@ $(document).ready(function(){
     //글 작성
     $("#content_insert").click(function(e){
     	e.preventDefault();
-    	var data = { 'title' : $("#write_title").val(), 'content' : $("#write_content").val(), 'star': star, 'name' : $('#write_name').text() }
+    	var formData = new FormData();
+    	console.log($("#write_file")[0].files.length);
+    	console.log($("#write_file")[0].files[0]);
+    	formData.append('title', $("#write_title").val());
+    	formData.append('content', $("#write_content").val() );
+    	formData.append('star', star);
+    	formData.append('name', $('#write_name').text());
+    	formData.append('no',  no);
+    	for(var i=0 ; i < $("#write_file")[0].files.length; i++) {
+    		   formData.append("files" , $("#write_file")[0].files[i]);
+    	}
     	$.ajax({ 
 			url: "/insert", 
-			data: data, 
+			data: formData, 
 			method:"POST", 
-			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			processData: false,
+			contentType: false,
 			dataType: "json", 
 			success : function(data){
 				console.log(data);
@@ -130,15 +144,19 @@ $(document).ready(function(){
 			}
 		});
 	});
-    
-   
     $('#update').click(function(e){
     	e.preventDefault();
-    	var data = { 'title' : $("#update_title").val(), 'content' : $("#update_content").val(), 'star': star, 'name' : $('#update_name').text(), 'no' : no }
+    	var formData = new FormData();
+    	formData.append('title', $("#update_title").val());
+    	formData.append('content',$("#update_content").val() );
+    	formData.append('star', star);
+    	formData.append('name', $('#update_name').text());
+    	formData.append('no',  no);
+    	
     	console.log(data);
     	$.ajax({ 
 			url: "/update", 
-			data: data, 
+			data: formData, 
 			method:"POST", 
 			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 			dataType: "json", 
@@ -171,10 +189,31 @@ $(document).ready(function(){
 		    	location.reload();
 			}
 		});
+    });
+    var ajax_file = [];
+    $("#write_file").change(function(e){
+    	$(".select_img").empty();
+    	var files = e.target.files;
+    	var filesArr = Array.prototype.slice.call(files);
+    	var index = 0;
+    	for (var i = 0; i < filesArr.length; i++) {
+    		if(!filesArr[i].type.match("image.*")){
+    			alert("확장자는 이미지 확장자만 가능합니다");
+    			return;
+    		}
+    		ajax_file.push(filesArr[i]);
+    		console.log(filesArr[i]);
+    		var reader = new FileReader();
+			reader.onload = function(data){
+	   			var source_path = data.target.result;
+	   			var source = '<img style="width: 25%;"src="' + source_path + '"/>';
+	   			$(".select_img").append(source);		
+	   			console.log(index);
+			}
+			reader.readAsDataURL(filesArr[i]);
+		}
     	
     });
-   
-    
 }); 
 </script>
 </head>
@@ -257,7 +296,8 @@ $(document).ready(function(){
 		</p> 
 	 </div>
 		<h5>첨부파일</h5> 
-		<input class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
+		<div class="select_img"><img src="" /></div>
+		<input id="write_file" class="btn btn-outline-primary" name="file[]" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
 		<button class="btn btn-outline-success" id="content_insert" >작성</button>
 		<button class="btn btn-outline-danger" id="write_cancel">취소</button><br>
 	</form>
@@ -286,7 +326,8 @@ $(document).ready(function(){
 		</p> 
 	 </div>
 		<h5>첨부파일</h5>
-		<input  id="updat_file" class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
+		<div class="select_img"><img src="" /></div>
+		<input  id="update_file" name="file"  class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
 		<button class="btn btn-outline-success" id="update">수정</button>
 		<button class="btn btn-outline-danger"  id="update_delete">삭제</button>
 		<button class="btn btn-outline-secondary update_back" >뒤로가기</button><br>

@@ -1,5 +1,7 @@
 package com.java.board;
 
+import java.util.List;
+
 public class BoardBean {
 	private String no;
 	private String title;
