@@ -1,5 +1,8 @@
 package com.java.board;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,20 +46,53 @@ public class BoardController {
 	}
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
 	public void insert(@RequestParam("files") MultipartFile[] files, HttpServletRequest request,BoardBean bb,HttpServletResponse response) {
+		session.selectOne("test.insert", bb);
+		System.out.println(bb.getNo());
+		bb = session.selectOne("test.fileSelect", bb);
+		System.out.println(bb.getNo());
+		int[] statusList = new int[files.length];
+		try {
+			String[] content;
+			String path="";
+			for (int i = 0; i < files.length; i++) {
+				MultipartFile file = files[i];
+				String originalfileName = file.getOriginalFilename();
+				String ext = originalfileName.substring(originalfileName.lastIndexOf("."), originalfileName.length());
+				String fileName = UUID.randomUUID().toString();
+				//get realpath 는  동적으로 관리하기 위한 방안 이다. 절대적으로 관리하기위하면 사용하지 않아도 된다.
+				//String realPath=request.getSession().getServletContext().getRealPath("/");
+				//System.out.println(realPath);
+				byte[] data = file.getBytes();
+				path = "D:\\file\\img\\";
+				File f = new File(path);
+				if(!f.isDirectory()) {
+					System.out.println("없다");
+					f.mkdirs();
+				}
+				//output
+				OutputStream os = new FileOutputStream(new File(path + fileName + ext));
+				os.write(data);
+				os.close();
+				
+				FilesBean fb = new FilesBean();
+				fb.setBoardNum(bb.getNo());
+				fb.setFileOriginalName(originalfileName);
+				fb.setFileUUIDName(fileName + ext);
+				
+				int status = session.insert("test.fileInsert", fb);
+				statusList[i] = status;
+				System.out.println(i +"번째의 결과" + status);
+				System.out.println(files);
+				
+			}
 		
-		for (int i = 0; i < files.length; i++) {
-			MultipartFile file = files[i];	
-			System.out.println(file); 
-			String originalFileName = file.getOriginalFilename();
-			System.out.println(originalFileName);
-			String fileName = UUID.randomUUID().toString();
-			System.out.println(fileName);
-			String ext = originalFileName.substring(originalFileName.lastIndexOf("."), originalFileName.length());
-			System.out.println("처음 내용 : " + originalFileName + ext);
-			System.out.println("데이터베이스 : " + fileName);
+			content = text(path);
+			System.out.println(content);
+			request.setAttribute("content", content );
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-		
-		//session.selectOne("test.insert", bb);
+	
 		JSONObject jsonObject = new JSONObject();
 		boolean result = true;
 		jsonObject.put("result", result);
@@ -66,12 +102,25 @@ public class BoardController {
 			e.printStackTrace();
 		}
 	}
+	//상태 체크
+	public String[] text(String path) {
+		File folder = new File(path);
+		String[] name = new String[(int) folder.length()];
+		int i =0;
+		for (File filePath : folder.listFiles()) {
+			name[i] = filePath.getName();
+			System.out.println(name[i]);
+			i++;
+		}
+		return name;
+	}
 	@RequestMapping(value = "/board_Detail", method = RequestMethod.POST)
 	public void detail(HttpServletRequest request,  BoardBean bb, HttpServletResponse response) {
 		System.out.println(request.getParameter("no"));
 		BoardBean info = session.selectOne("test.select", bb);
 		JSONObject jsonObject = new JSONObject();
 		try {
+			//ajax 통신 성공을 하기 위해 utf-8을 세팅 해주어야 함.
 			jsonObject.put("info", info);
 			response.setHeader("Content-Type", "application/xml");
 			response.setContentType("text/xml;charset=UTF-8");

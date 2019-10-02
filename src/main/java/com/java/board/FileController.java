@@ -36,53 +36,53 @@ public class FileController {
 		return "file";
 	}
 	
-	@RequestMapping(value = "/file", method = RequestMethod.POST)
-	public String file(@RequestParam("file") MultipartFile[] files, HttpServletRequest request) {
-		int[] statusList = new int[files.length];
-		try {
-			String[] content;
-			String path="";
-			for (int i = 0; i < files.length; i++) {
-				MultipartFile file = files[i];
-				String originalfileName = file.getOriginalFilename();
-				String ext = originalfileName.substring(originalfileName.lastIndexOf("."), originalfileName.length());
-				String fileName = UUID.randomUUID().toString();
-				String realPath=request.getSession().getServletContext().getRealPath("/");
-				System.out.println(realPath);
-				byte[] data = file.getBytes();
-				path = realPath + "resources\\upload\\";
-				File f = new File(path);
-				if(!f.isDirectory()) {
-					System.out.println("없다");
-					f.mkdirs();
-				}
-				no,path,originalFileName, uuidFileName;
-				//output
-				OutputStream os = new FileOutputStream(new File(path + fileName + ext));
-				os.write(data);
-				os.close();
-				
-				FilesBean fb = new FilesBean();
-				fb.setDelYn("N");
-				fb.setFileName(originalfileName);
-				fb.setFileURL(fileName + ext);
-				
-				int status = session.insert("test.insert", fb);
-				statusList[i] = status;
-				System.out.println(i +"번째의 결과" + status);
-				System.out.println(files);
-				
-			}
-		
-			content = text(path);
-			System.out.println(content);
-			request.setAttribute("content", content );
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-		
-		return "file";
-	}
+//	@RequestMapping(value = "/file", method = RequestMethod.POST)
+//	public String file(@RequestParam("file") MultipartFile[] files, HttpServletRequest request) {
+//		int[] statusList = new int[files.length];
+//		try {
+//			String[] content;
+//			String path="";
+//			for (int i = 0; i < files.length; i++) {
+//				MultipartFile file = files[i];
+//				String originalfileName = file.getOriginalFilename();
+//				String ext = originalfileName.substring(originalfileName.lastIndexOf("."), originalfileName.length());
+//				String fileName = UUID.randomUUID().toString();
+//				String realPath=request.getSession().getServletContext().getRealPath("/");
+//				System.out.println(realPath);
+//				byte[] data = file.getBytes();
+//				path = realPath + "resources\\upload\\";
+//				File f = new File(path);
+//				if(!f.isDirectory()) {
+//					System.out.println("없다");
+//					f.mkdirs();
+//				}
+//				//no,path,originalFileName, uuidFileName;
+//				//output
+//				OutputStream os = new FileOutputStream(new File(path + fileName + ext));
+//				os.write(data);
+//				os.close();
+//				
+//				FilesBean fb = new FilesBean();
+//				fb.setDelYn("N");
+//				fb.setFileName(originalfileName);
+//				fb.setFileURL(fileName + ext);
+//				
+//				int status = session.insert("test.insert", fb);
+//				statusList[i] = status;
+//				System.out.println(i +"번째의 결과" + status);
+//				System.out.println(files);
+//				
+//			}
+//		
+//			content = text(path);
+//			System.out.println(content);
+//			request.setAttribute("content", content );
+//		} catch (Exception e) {
+//			// TODO: handle exception
+//		}
+//		
+//		return "file";
+//	}
 	
 	public String[] text(String path) {
 		File folder = new File(path);

@@ -1,32 +1,45 @@
 package com.java.board;
 
 public class FilesBean {
-	String fileName;
-	String fileURL;
-	String delYn;
+	private String no;
+	private String boardNum;
+	private String fileOriginalName;
+	private String fileUUIDName;
+	
+	public FilesBean() {}
+	public FilesBean(String no, String boardNum, String fileOriginalName, String fileUUIDName) {
+		super();
+		this.boardNum = boardNum;
+		this.fileOriginalName = fileOriginalName;
+		this.fileUUIDName = fileUUIDName;
+	}
+
+	public String getNo() {
+		return no;
+	}
+	public void setNo(String no) {
+		this.no = no;
+	}
+	public String getBoardNum() {
+		return boardNum;
+	}
+	public void setBoardNum(String boardNum) {
+		this.boardNum = boardNum;
+	}
+	public String getFileOriginalName() {
+		return fileOriginalName;
+	}
+	public void setFileOriginalName(String fileOriginalName) {
+		this.fileOriginalName = fileOriginalName;
+	}
+	public String getFileUUIDName() {
+		return fileUUIDName;
+	}
+	public void setFileUUIDName(String fileUUIDName) {
+		this.fileUUIDName = fileUUIDName;
+	}
 	
 	
-	public String getFileName() {
-		return fileName;
-	}
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-	public String getFileURL() {
-		return fileURL;
-	}
-	public void setFileURL(String fileURL) {
-		this.fileURL = fileURL;
-	}
-	public String getDelYn() {
-		return delYn;
-	}
-	public void setDelYn(String delYn) {
-		this.delYn = delYn;
-	}
 	
-	@Override
-	public String toString() {
-		return "FilesBean [fileName=" + fileName + ", fileURL=" + fileURL + ", delYn=" + delYn + "]";
-	}
+	
 }
