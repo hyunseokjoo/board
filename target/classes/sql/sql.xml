@@ -56,7 +56,10 @@
   <insert id="fileInsert" parameterType="com.java.board.FilesBean">
   	insert into file (no,boardNum,fileOriginalName,fileUUIDName) values (#{no},#{boardNum},#{fileOriginalName}, #{fileUUIDName})
   </insert>
-
+    <select id="fileSearch" parameterType="com.java.board.BoardBean"  resultType="com.java.board.FilesBean">
+	SELECT  no, boardNum, fileOriginalName, fileUUIDName  FROM file where boardNum = #{no};
+  </select>
+	
   <select id="search" parameterType="com.java.board.ContentBean" resultType="com.java.board.ContentBean">
   	select title, image, content from TEST where 1=1
   	<if test="title != null ">

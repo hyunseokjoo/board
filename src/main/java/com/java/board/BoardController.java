@@ -116,12 +116,16 @@ public class BoardController {
 	}
 	@RequestMapping(value = "/board_Detail", method = RequestMethod.POST)
 	public void detail(HttpServletRequest request,  BoardBean bb, HttpServletResponse response) {
-		System.out.println(request.getParameter("no"));
+		System.out.println(request.getParameter("no") + "번 내용 출력");
+		FilesBean fb = new FilesBean();
+		fb.setBoardNum(request.getParameter("no"));
 		BoardBean info = session.selectOne("test.select", bb);
+		List<FilesBean> list = session.selectList("test.fileSearch", bb);
 		JSONObject jsonObject = new JSONObject();
 		try {
 			//ajax 통신 성공을 하기 위해 utf-8을 세팅 해주어야 함.
 			jsonObject.put("info", info);
+			jsonObject.put("fileList", list);
 			response.setHeader("Content-Type", "application/xml");
 			response.setContentType("text/xml;charset=UTF-8");
 			response.setCharacterEncoding("utf-8");

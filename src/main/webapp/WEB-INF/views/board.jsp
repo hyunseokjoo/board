@@ -127,8 +127,11 @@ $(document).ready(function(){
 				//console.log(typeof data);json 아니고 오브젝트
 				//var str = JSON.stringify(data);// string으로 변환해줌.
 				//console.log(typeof str);
+				console.log(data);
 				var result = data.info;
+				var fileList = data.fileList;
 				console.log(result);
+				console.log(fileList);
 				$("#content_list").addClass("dn");
 		    	$("#content_write").addClass("dn");
 		    	$("#content_update").removeClass("dn");
@@ -141,6 +144,12 @@ $(document).ready(function(){
 		    	for (var i = 0; i < result.star; i++) {
 		    		$(".update_star").children('a').eq(i).addClass('on');
 				}
+		    	//http://localhost:8080/img/KakaoTalk_20190827_110419813.png
+		    	for (var i = 0; i < fileList.length; i++) {
+		    		var html = "<img style='width: 25%;' src='/img/" + fileList[i].fileUUIDName + "'/>";
+		    		$(".select_img").append(html);
+				}
+		    	
 			}
 		});
 	});
@@ -326,7 +335,7 @@ $(document).ready(function(){
 		</p> 
 	 </div>
 		<h5>첨부파일</h5>
-		<div class="select_img"><img src="" /></div>
+		<div class="select_img"></div>
 		<input  id="update_file" name="file"  class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
 		<button class="btn btn-outline-success" id="update">수정</button>
 		<button class="btn btn-outline-danger"  id="update_delete">삭제</button>
