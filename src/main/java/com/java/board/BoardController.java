@@ -45,11 +45,25 @@ public class BoardController {
 		board( request,  bb,  httpSession);
 	}
 	@RequestMapping(value = "/insert", method = RequestMethod.POST)
-	public void insert(@RequestParam("files") MultipartFile[] files, HttpServletRequest request,BoardBean bb,HttpServletResponse response) {
+	public void insert(@RequestParam("files") MultipartFile[] files, HttpServletRequest request,BoardBean bb, HttpServletResponse response) {
 		session.selectOne("test.insert", bb);
 		System.out.println(bb.getNo());
 		bb = session.selectOne("test.fileSelect", bb);
 		System.out.println(bb.getNo());
+		int checkPoint = 1;
+		fileInsert(files, bb, checkPoint);
+		
+		JSONObject jsonObject = new JSONObject();
+		boolean result = true;
+		jsonObject.put("result", result);
+		try {
+			response.getWriter().print(jsonObject);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void fileInsert(MultipartFile[] files,BoardBean bb, int checkPoint) {
 		int[] statusList = new int[files.length];
 		try {
 			String[] content;
@@ -78,8 +92,12 @@ public class BoardController {
 				fb.setBoardNum(bb.getNo());
 				fb.setFileOriginalName(originalfileName);
 				fb.setFileUUIDName(fileName + ext);
-				
-				int status = session.insert("test.fileInsert", fb);
+				int status = 0;
+				if(checkPoint == 1) {
+					status = session.insert("test.fileInsert", fb);
+				}else if(checkPoint == 2) {
+					status = session.insert("test.fileUpdate", fb);
+				}
 				statusList[i] = status;
 				System.out.println(i +"번째의 결과" + status);
 				System.out.println(files);
@@ -88,18 +106,8 @@ public class BoardController {
 		
 			content = text(path);
 			System.out.println(content);
-			request.setAttribute("content", content );
 		} catch (Exception e) {
 			// TODO: handle exception
-		}
-	
-		JSONObject jsonObject = new JSONObject();
-		boolean result = true;
-		jsonObject.put("result", result);
-		try {
-			response.getWriter().print(jsonObject);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 	//상태 체크
@@ -135,8 +143,12 @@ public class BoardController {
 		}
 	}
 	@RequestMapping(value = "/update", method = RequestMethod.POST)
-	public void update(HttpServletRequest request, BoardBean bb, HttpServletResponse response) {
+	public void update(@RequestParam("files") MultipartFile[] files, HttpServletRequest request, BoardBean bb, HttpServletResponse response) {
 		session.update("test.update", bb);
+		bb = session.selectOne("test.fileSelect", bb);
+		int checkPoint = 2;
+		fileInsert(files, bb,checkPoint);
+		
 		JSONObject jsonObject = new JSONObject();
 		boolean result = true;
 		jsonObject.put("result", result);
@@ -146,6 +158,7 @@ public class BoardController {
 			e.printStackTrace();
 		}
 	}
+	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public void delete(HttpServletRequest request, BoardBean bb,  HttpServletResponse response) {
 		session.update("test.delete", bb);
@@ -158,7 +171,30 @@ public class BoardController {
 			e.printStackTrace();
 		}
 	}
-	
+	//fileDelete
+	@RequestMapping(value = "/fileDelete", method = RequestMethod.POST)
+	public void delete(HttpServletRequest request,  HttpServletResponse response) {
+		String path = "D:\\file\\img\\";
+		String fileUUIDName = request.getParameter("fileName");
+		String filePath = path + fileUUIDName;
+		JSONObject jsonObject = new JSONObject();
+		boolean result = fileDelete(filePath, fileUUIDName);
+		System.out.println(result);
+		jsonObject.put("result", result);
+		try {
+			response.getWriter().print(jsonObject);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public boolean fileDelete(String filePath, String fileUUIDName) {
+		System.out.println(fileUUIDName);
+		FilesBean fb = new FilesBean();
+		fb.setFileUUIDName(fileUUIDName);
+		session.update("test.fileDelete", fb);
+	 	File f = new File(filePath);
+	 	return f.delete();
+	}
 	//logout
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
 	public  String logout(HttpSession httpSession) {

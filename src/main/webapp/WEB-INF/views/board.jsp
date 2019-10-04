@@ -6,6 +6,9 @@
 <html>
 <head>
 <script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAliRiAqZrcZ1REM9Fcty6veqXLkQmn7Wc">
+<script type="text/javascript"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <meta charset="UTF-8">
 <title>게시판</title>
@@ -58,19 +61,94 @@
   .select_img{
   	padding: 10px;
   }
-</style> 
+
+.where {
+  display: block;
+  margin: 25px 15px;
+  font-size: 11px;
+  color: #000;
+  text-decoration: none;
+  font-family: verdana;
+  font-style: italic;
+} 
+
+.filebox input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip:rect(0,0,0,0);
+    border: 0;
+}
+
+body {margin: 10px}
+.where {
+  display: block;
+  margin: 25px 15px;
+  font-size: 11px;
+  color: #000;
+  text-decoration: none;
+  font-family: verdana;
+  font-style: italic;
+} 
+
+.filebox input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip:rect(0,0,0,0);
+    border: 0;
+}
+
+.filebox label {
+    display: inline-block;
+    padding: .5em .75em;
+    color: #999;
+    font-size: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    background-color: #fdfdfd;
+    cursor: pointer;
+    border: 1px solid #ebebeb;
+    border-bottom-color: #e2e2e2;
+    border-radius: .25em;
+}
+
+/* named upload */
+.filebox .upload-name {
+    display: inline-block;
+    padding: .5em .75em;
+    font-size: inherit;
+    font-family: inherit;
+    line-height: normal;
+    vertical-align: middle;
+    background-color: #f5f5f5;
+  border: 1px solid #ebebeb;
+  border-bottom-color: #e2e2e2;
+  border-radius: .25em;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.filebox.bs3-primary label {
+  color: #fff;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    }
+</style>
 <% //content_write 글작성,  content_update 글 수정 %>
 <script>
 $(document).ready(function(){
-	var star = 0;
-    $('.star_grade a, .update_star a').click(function(){ 
-	    $(this).parent().children("a").removeClass("on");  /* 별점의 on 클래스 전부 제거 */
-	    $(this).addClass("on").prevAll("a").addClass("on"); /* 클릭한 별과, 그 앞 까지 별점에 on 클래스 추가 */
-	    star = $(this).attr("value");
-    });
     //페이지 글쓰기 전환
     $("#write").click(function(e){
     	e.preventDefault();
+    	$(".select_img").empty();
     	$("#content_update").addClass("dn");
     	$("#content_list").addClass("dn");
     	$("#content_write").removeClass("dn");
@@ -111,11 +189,20 @@ $(document).ready(function(){
 			}
 		});
     });
-    //자세히 보기 = 수정
+  	//별점 주기 내용
+	var star = 0;
+    $('.star_grade a, .update_star a').click(function(e){ 
+    	e.preventDefault();
+	    $(this).parent().children("a").removeClass("on");  /* 별점의 on 클래스 전부 제거 */
+	    $(this).addClass("on").prevAll("a").addClass("on"); /* 클릭한 별과, 그 앞 까지 별점에 on 클래스 추가 */
+	    star = $(this).attr("value");
+    });
+    //자세히 보기
     var no = 0;
     $('.content_click').on('click', function(e){
     	e.preventDefault();
     	var data = { no : $(this).children("td")[0].innerText }
+    	console.log(data);
     	$.ajax({ 
 			url: "/board_Detail", 
 			data: data, 
@@ -123,6 +210,7 @@ $(document).ready(function(){
 			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
 			dataType: "json", 
 			success : function(data){
+				$(".select_img").empty();
 				//오류 해결
 				//console.log(typeof data);json 아니고 오브젝트
 				//var str = JSON.stringify(data);// string으로 변환해줌.
@@ -146,28 +234,55 @@ $(document).ready(function(){
 				}
 		    	//http://localhost:8080/img/KakaoTalk_20190827_110419813.png
 		    	for (var i = 0; i < fileList.length; i++) {
-		    		var html = "<img style='width: 25%;' src='/img/" + fileList[i].fileUUIDName + "'/>";
+		    		var html = "<div><img style='width: 25%;' src='/img/" + fileList[i].fileUUIDName + "'/><div style='width: 10%;'class='fileDelete' value='"+ fileList[i].fileUUIDName +"'>삭제</div></div>";
 		    		$(".select_img").append(html);
 				}
 		    	
+		    	 $(".fileDelete").off().on('click', function(){
+		    		 console.log($(this).parent().addClass("dn"));
+		    	    	console.log($(this).children().prevObject.eq(0).attr("value"));
+		    	    	fileName = $(this).children().prevObject.eq(0).attr("value");
+		    	    	data = { 'fileName' : fileName }
+		    	    	 $.ajax({ 
+		    				url: "/fileDelete", 
+		    				data: data, 
+		    				method:"POST", 
+		    				contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		    				dataType: "json", 
+		    				success : function(data){
+		    					console.log(data.result);
+		    					if(data.result){
+		    						alert("삭제되엇습니다.");
+		    					}else {
+		    					 	alert("문제가 발생했습니다");
+		    					}
+		    				}
+		    	    	});
+		    	 });
 			}
 		});
 	});
+    //디테일에서 수정
     $('#update').click(function(e){
     	e.preventDefault();
+    	console.log($("#write_file")[0].files.length);
+    	console.log($("#write_file")[0].files[0]);
     	var formData = new FormData();
     	formData.append('title', $("#update_title").val());
     	formData.append('content',$("#update_content").val() );
     	formData.append('star', star);
     	formData.append('name', $('#update_name').text());
     	formData.append('no',  no);
-    	
-    	console.log(data);
+    	for(var i=0 ; i < $("#update_file")[0].files.length; i++) {
+ 		   formData.append("files" , $("#update_file")[0].files[i]);
+ 		}
+    	 
     	$.ajax({ 
 			url: "/update", 
 			data: formData, 
 			method:"POST", 
-			contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+			processData: false,
+			contentType: false,
 			dataType: "json", 
 			success : function(data){
 				console.log("1");
@@ -177,9 +292,9 @@ $(document).ready(function(){
 		    	alert("수정되었습니다.");
 		    	location.reload();
 			}
-		});
+		}); 
     });
-    
+    //디테일에서 삭제
     $('#update_delete').click(function(e){
     	e.preventDefault();
     	var data = { 'no' : no };
@@ -199,6 +314,7 @@ $(document).ready(function(){
 			}
 		});
     });
+    //새글 작성
     var ajax_file = [];
     $("#write_file").change(function(e){
     	$(".select_img").empty();
@@ -215,15 +331,35 @@ $(document).ready(function(){
     		var reader = new FileReader();
 			reader.onload = function(data){
 	   			var source_path = data.target.result;
-	   			var source = '<img style="width: 25%;"src="' + source_path + '"/>';
+	   			var source = '<img style="width: 25%;"src="' + source_path + '"/><div></div>';
 	   			$(".select_img").append(source);		
 	   			console.log(index);
 			}
 			reader.readAsDataURL(filesArr[i]);
 		}
-    	
     });
+   //파일 업로드 네임 input박스 설정
+  $('.filebox .upload-hidden').on('change', function(){
+    	var totalName = "";
+    	console.log( $(this)[0].files);
+    	for (var i = 0; i < $(this)[0].files.length; i++) {
+	        if(window.FileReader){
+	            var filename = $(this)[0].files[i].name;
+	        } else {
+	            var filename = $(this).val().split('/').pop().split('\\').pop();
+	        }
+			totalName += filename;
+    	}
+    	if($(this)[0].files.length == 1){
+	        $(this).siblings('.upload-name').val(totalName);
+        }else if ($(this)[0].files.length >= 2){
+         var length = "파일" + $(this)[0].files.length + "개";
+         $(this).siblings('.upload-name').val(length);
+        }
+    });
+
 }); 
+
 </script>
 </head>
 <body>
@@ -238,6 +374,9 @@ $(document).ready(function(){
 	  </li>
 	  <li class="nav-item"> 
 	    <a id="write" class="nav-link text-info" >글쓰기</a>
+	  </li>
+	  <li class="nav-item"> 
+	    <a href="/userPage" id="move" class="nav-link text-info" >홈페이지 이동</a>
 	  </li>
 	</ul>
   </div>
@@ -306,7 +445,12 @@ $(document).ready(function(){
 	 </div>
 		<h5>첨부파일</h5> 
 		<div class="select_img"><img src="" /></div>
-		<input id="write_file" class="btn btn-outline-primary" name="file[]" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
+		<div class="filebox bs3-primary">
+         <input class="upload-name" value="파일선택" disabled>      
+         <label for="write_file">업로드</label> 
+         <input id="write_file" name="file[]" type="file" enctype="multipart/form-data" multiple="multiple" class="upload-hidden"> 
+        </div>
+		<hr>
 		<button class="btn btn-outline-success" id="content_insert" >작성</button>
 		<button class="btn btn-outline-danger" id="write_cancel">취소</button><br>
 	</form>
@@ -335,8 +479,13 @@ $(document).ready(function(){
 		</p> 
 	 </div>
 		<h5>첨부파일</h5>
-		<div class="select_img"></div>
-		<input  id="update_file" name="file"  class="btn btn-outline-primary" type="file" enctype="multipart/form-data" multiple="multiple"><br><hr>
+		<div class="select_img filebox"></div>
+		<div class="filebox bs3-primary">
+         <input class="upload-name" value="파일선택" disabled>      
+         <label for="update_file">업로드</label> 
+         <input id="update_file" name="file[]" type="file" enctype="multipart/form-data" multiple="multiple" class="upload-hidden"> 
+        </div>
+		<hr>
 		<button class="btn btn-outline-success" id="update">수정</button>
 		<button class="btn btn-outline-danger"  id="update_delete">삭제</button>
 		<button class="btn btn-outline-secondary update_back" >뒤로가기</button><br>
