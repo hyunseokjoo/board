@@ -40,6 +40,7 @@ public class HomeController {
 	@Autowired
 	SqlSession session;
 
+
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String home(HttpServletRequest request, HttpSession httpSession) {
 		if(httpSession.getAttribute("logIn") != null) {

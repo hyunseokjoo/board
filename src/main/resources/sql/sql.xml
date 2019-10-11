@@ -8,6 +8,7 @@
    	select id, password from USER where id = #{id} and password = #{password} 
   </select>
   
+  
   <!-- 회원가입 -->
   <insert id="userInsert" parameterType="com.java.board.UserInfo">
   	insert into USER (id, password, b_year, b_month, b_day, email, gender, phone) 
@@ -16,7 +17,6 @@
   <insert id="signIn" parameterType="com.java.board.UserInfo">
   	 insert into USER(id,password,b_year,b_month,b_day,email,gender,phone) values( #{id},#{password},#{b_year},#{b_month},#{b_day},#{email},#{gender},#{phone})
   </insert>
-  
   
 
   <!-- 회원가입 체크 -->
@@ -31,10 +31,17 @@
   
   <!-- 게시판 R -->
   <select id="select" resultType="com.java.board.BoardBean" parameterType="com.java.board.BoardBean" >
-  	select no, title ,content, name, star from board WHERE DELYN = 'N'
+  	select no, title ,content, name, star from board WHERE DELYN = 'N' 
   	  <if test="no != null">
 	    AND no = #{no}
 	  </if>
+  </select>
+  
+  <select id="selectPaging" resultType="com.java.board.BoardBean" parameterType="com.java.board.BoardBean" >
+  	select no, title ,content, name, star from board WHERE DELYN = 'N' ORDER BY `no` DESC 
+  </select>
+  <select id="totalNum" resultType="integer">
+    select count(no) from board
   </select>
   <!-- 게시판 C -->
   <insert id="insert" parameterType="com.java.board.BoardBean">
@@ -63,7 +70,7 @@
     update file set delYn = 'Y' where fileUUIDName = #{fileUUIDName}
   </update>
   <insert id="fileUpdate" parameterType="com.java.board.FilesBean">
-    insert into file (no, boardNum, fileOriginalName, fileUUIDName ) values (#{no},#{boardNum},#{fileOriginalName}, #{fileUUIDName});
+    insert into file ( boardNum, fileOriginalName, fileUUIDName ) values (#{boardNum},#{fileOriginalName}, #{fileUUIDName});
   </insert>
   <select id="search" parameterType="com.java.board.ContentBean" resultType="com.java.board.ContentBean">
   	select title, image, content from TEST where 1=1
@@ -72,5 +79,9 @@
   	</if>
   </select>
 
+
+  <select id="file" resultType="com.java.board.FilesBean">
+	SELECT no, boardNum, fileOriginalName, fileUUIDName FROM file  WHERE delYn = 'N' GROUP BY boardNum
+  </select>
 
 </mapper>

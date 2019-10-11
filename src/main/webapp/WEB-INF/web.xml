@@ -48,11 +48,11 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	
-	<bean class="org.springframework.http.converter.StringHttpMessageConverter" >
+	<!-- <bean class="org.springframework.http.converter.StringHttpMessageConverter" >
    	<property name="supportedMediaTypes">
                <list>
                    <value>text/html;charset=UTF-8</value>
                </list>
        </property>
- 	</bean>
+ 	</bean> -->
 </web-app>

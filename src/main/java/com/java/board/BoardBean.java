@@ -8,10 +8,18 @@ public class BoardBean {
 	private String content;
 	private String name;
 	private int star;
+	private int num;
 	
+	public int getNum() {
+		return num;
+	}
+	public void setNum(int num) {
+		this.num = num;
+	}
 	public BoardBean() {}
-	public BoardBean(String title, String content, String name,String no, int star) {
+	public BoardBean(String title, String content, String name,String no, int star, int num) {
 		super();
+		this.num = num;
 		this.title = title;
 		this.content = content;
 		this.name = name;

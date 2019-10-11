@@ -35,8 +35,10 @@ public class BoardController {
 		}else {
 			UserInfo user = (UserInfo) httpSession.getAttribute("logIn"); //세션 가져오기 userinfo 로 넣어 줬기때문에 변환함
 			List<BoardBean> list = session.selectList("test.select", bb); 
+			int totalNum = session.selectOne("test.totalNum");
 			request.setAttribute("id", user.getId()); //user의 id를 객체로 전환해서 넣어줌
 			request.setAttribute("list", list); //게시글 내용 가져 오기
+			request.setAttribute("totalNum", totalNum);
 			return "/board";
 		}
 	}
@@ -64,6 +66,7 @@ public class BoardController {
 	}
 	
 	public void fileInsert(MultipartFile[] files,BoardBean bb, int checkPoint) {
+		System.out.println(bb.getNo());
 		int[] statusList = new int[files.length];
 		try {
 			String[] content;
@@ -90,6 +93,7 @@ public class BoardController {
 				
 				FilesBean fb = new FilesBean();
 				fb.setBoardNum(bb.getNo());
+				System.out.println(fb.getBoardNum());
 				fb.setFileOriginalName(originalfileName);
 				fb.setFileUUIDName(fileName + ext);
 				int status = 0;
@@ -99,7 +103,7 @@ public class BoardController {
 					status = session.insert("test.fileUpdate", fb);
 				}
 				statusList[i] = status;
-				System.out.println(i +"번째의 결과" + status);
+				System.out.println(i +"번째의 결과 " + status);
 				System.out.println(files);
 				
 			}
@@ -142,13 +146,25 @@ public class BoardController {
 			e.printStackTrace();
 		}
 	}
-	@RequestMapping(value = "/update", method = RequestMethod.POST)
+	@RequestMapping(value = "/updateWithFile", method = RequestMethod.POST)
 	public void update(@RequestParam("files") MultipartFile[] files, HttpServletRequest request, BoardBean bb, HttpServletResponse response) {
 		session.update("test.update", bb);
-		bb = session.selectOne("test.fileSelect", bb);
 		int checkPoint = 2;
-		fileInsert(files, bb,checkPoint);
-		
+		if(files.length!=0) {
+			fileInsert(files, bb,checkPoint);
+		}
+		JSONObject jsonObject = new JSONObject();
+		boolean result = true;
+		jsonObject.put("result", result);
+		try {
+			response.getWriter().print(jsonObject);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	@RequestMapping(value = "/updateWithoutFile", method = RequestMethod.POST)
+	public void update(HttpServletRequest request, BoardBean bb, HttpServletResponse response) {
+		session.update("test.update", bb);
 		JSONObject jsonObject = new JSONObject();
 		boolean result = true;
 		jsonObject.put("result", result);
@@ -161,6 +177,7 @@ public class BoardController {
 	
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
 	public void delete(HttpServletRequest request, BoardBean bb,  HttpServletResponse response) {
+		System.out.println(request.getParameter("no") + "번 내용 출력");
 		session.update("test.delete", bb);
 		JSONObject jsonObject = new JSONObject();
 		boolean result = true;
